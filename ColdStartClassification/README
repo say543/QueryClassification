@@ -1,0 +1,59 @@
+===============================================================================
+Cold Start Classification README
+===============================================================================
+Author:     Chad Atalla (t-chat)
+Updated:    9/5/18
+===============================================================================
+
+How does this work?
+
+1. 'python online_prediction.py'
+    
+    Description:    Runs a realtime demo, prompts user for query, classifies
+                    query against TF Hub module with golden queries.
+                    Can add support for new domains and intents by adding
+                    examples to the config file.
+
+    Input:          No command line args.
+                    Need data/golden_queries_preprocessed.tsv
+                    Need additional_domains.cfg
+
+    Output:         No file output, prints classification for each query.
+    
+---
+
+2. 'python fine_tune.py'
+    
+    Description:    Runs Siamese network training to fine-tune the Universal
+                    Sentence Encoder model. Trains, prints test stats, and 
+                    saves updated model.
+
+    Input:          No command line args.
+                    Hyperparameters can be set at top of file.
+                    Need Train data path. (preprocessed) (curriculum)
+                    Need Test data path. (preprocessed)
+
+    Output:         Saves the trained model to models/fine-tuned
+
+---
+
+
+3. 'python run_classification.py -p <preprocessed dataset path> -m <distance
+                                         metric> -c <classification method>'
+    
+    Description:    Runs batch classification over a dataset, reports domain
+                    and intent precision/recall. 
+
+    Input:          -p data path, -m distance metric, -c classification method,
+                    -f flag to use siamese tuned model, -g flag to use golden
+                    query representatives, -t flag to run two-step hierarchical
+                    classification
+                    Hyperparameters can be set at top of file.
+                    Data path must point to preprocessed tsv file.
+                    Need data/golden_queries_preprocessed.tsv
+
+    Output:         Prints out Precision / Recall for the chosen domain, the
+                    confusion matrix for intents of that domain, and
+                    domain-general numbers, along with a sample of predictions.
+                    Also saves the data/predictions.csv file.
+                    Also caches embeddings to a set of data/*.npz files.
